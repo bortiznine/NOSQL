@@ -6,7 +6,7 @@ import com.datastax.driver.core.Row;
 
 public class Main {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         System.out.println("Cassandra Java Connection");
         Cluster cluster;
         Session session;
