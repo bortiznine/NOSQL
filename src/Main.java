@@ -14,7 +14,7 @@ public class Main {
         cluster = Cluster.builder().addContactPoint("localhost").build();
         session = (Session) cluster.connect("ecommerce");
         System.out.println("Inserting Data in Cassandra");
-        session.execute("INSERT INTO products (pdt_id, cat_id, pdt_name, pdt_desc, price, shipping) VALUES (001,104, 'Danby 0.7 cu. ft. Microwave Oven', 'Capacity of 0.7 cu. ft.10 different power levels', 54.00, 'Expedited')");
+        session.execute("INSERT INTO products (pdt_id, cat_id, pdt_name, pdt_desc, price, shippingAddress) VALUES (001,104, 'Danby 0.7 cu. ft. Microwave Oven', 'Capacity of 0.7 cu. ft.10 different power levels', 54.00, 'Expedited')");
         String pdtid = null, pdtname = null, pdtdesc = null;
         float price = 0;
         ResultSet resultset = session.execute("select * from products where pdt_id=005");
