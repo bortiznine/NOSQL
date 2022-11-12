@@ -60,6 +60,27 @@ try {
     Double activity_duration = sc8.nextDouble();
     System.out.println("User input: " + activity_duration);
 
+    Thread.sleep(2000);
+    System.out.println("We will now enter the new Patient's Vitals:");
+    Thread.sleep(2000);
+
+    System.out.println("Please enter the patient's blood pressure (SYS/DIAS):");
+    Scanner sc9 = new Scanner(System.in);
+    String blood_pressure = sc9.nextLine();
+    System.out.println("User input: " + blood_pressure);
+
+    System.out.println("Please enter the patient's heart rate:");
+    Scanner sc10 = new Scanner(System.in);
+    Integer heart_rate = sc10.nextInt();
+    System.out.println("User input: " + heart_rate);
+
+    System.out.println("Please enter the patient's Sp02(Oxygen Levels):");
+    Scanner sc11 = new Scanner(System.in);
+    Integer sp02 = sc11.nextInt();
+    System.out.println("User input: " + sp02);
+
+
+
     System.out.println("Cassandra Java Connection");
     Cluster cluster;
     Session session;
@@ -88,6 +109,7 @@ try {
         System.out.println("Address: " + address);
         System.out.println("Insurance: " + insurance);
         System.out.println("Dated Created: " + date_created);
+    }
 
     PreparedStatement result_activity = session.prepare("INSERT INTO patient_activity (pid, duration,last_activity, name,time) VALUES (?,?,?,?,?);");
     BoundStatement boundStatement_activity = new BoundStatement(result_activity);
@@ -104,15 +126,37 @@ try {
         name = row_activity.getString("name");
 
 
-        System.out.println("Patient ID: " + pid);
         System.out.println("Duration: " + activity_duration);
         System.out.println("Last Activity: " + activity);
-        System.out.println("Name: " + name);
         System.out.println("Time Stamp: " + date_created);
 
 
     }
-                }
+
+    PreparedStatement result_vitals = session.prepare("INSERT INTO patient_vitals (pid, blood_pressure,heartrate, name,sp02) VALUES (?,?,?,?,?);");
+    BoundStatement boundStatement_vitals = new BoundStatement(result_vitals);
+    ResultSet results_vitals = session.execute(boundStatement_vitals.bind(
+            pid, blood_pressure, heart_rate, name, sp02));
+
+    PreparedStatement result_vitals2= session.prepare("select * from patient_vitals where name=? ALLOW FILTERING;");
+    BoundStatement boundStatement_vitals2 = new BoundStatement(result_vitals2);
+    ResultSet resultset_vitals2 = session.execute(boundStatement_vitals2.bind(name));
+    for (Row row_vitals : resultset_vitals2) {
+
+        blood_pressure = row_vitals.getString("blood_pressure");
+        heart_rate = row_vitals.getInt("heartrate");
+        name = row_vitals.getString("name");
+        sp02= row_vitals.getInt("sp02");
+
+
+        System.out.println("Patient ID: " + pid);
+        System.out.println("Blood Pressure: " + blood_pressure);
+        System.out.println("Heart Rate: " + heart_rate);
+        System.out.println("Oxygen Levels: " + sp02);
+
+
+    }
+
     cluster.close();
 }
 catch (Exception e){
