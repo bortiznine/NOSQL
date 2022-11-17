@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         int input=3;
         while (input!=0) {
@@ -165,9 +165,11 @@ public class Main {
                     }
                     break;
                 case 2:
+                    try{
                     System.out.println("Please Select a Query to run to find data:\n\n");
-                    System.out.println("Find all patients by name with heart rates higher than 90 BPM(1) \n");
-                    System.out.println("Find all patients by Patient ID and name that did cardio or yoga last activity(2) \n");
+                    System.out.println("Find all patients by name with heart rates higher than 90 BPM (1) \n");
+                    System.out.println("Find all patients by Patient ID and name that did cardio last activity and duration was 90+ minutes (2) \n");
+                    System.out.println("Find the pid,name,blood_pressure of all patients by name that have SP02 lower than 95% (3) \n");
 
                     Scanner caseTwo_sc1 = new Scanner(System.in);
                     Integer input2 = caseTwo_sc1.nextInt();
@@ -181,9 +183,11 @@ public class Main {
                             cluster = Cluster.builder().addContactPoint("localhost").build();
                             session = (Session) cluster.connect("medical_db");
                             ResultSet resultSet= session.execute("select name from patient_vitals where heartrate>=90 ALLOW FILTERING;");
+                            cluster.close();
+                            System.out.println("Results\n");
                             for (Row row_q1 : resultSet) {
                             System.out.println(row_q1.getString("name"));
-                            cluster.close();
+
                             }
                         break;
                         case 2:
@@ -191,19 +195,36 @@ public class Main {
                             //Connect to the cluster and Keyspace ecommerce
                             cluster = Cluster.builder().addContactPoint("localhost").build();
                             session = (Session) cluster.connect("medical_db");
-                            ResultSet resultSet2= session.execute("select pid,name from patient_activity where last_activity='cardio' or last_activity='yoga' ALLOW FILTERING;");
-                            for (Row row_q2 : resultSet2) {
-                                System.out.println(row_q2.getInt("p1.pid")+row_q2.getString("p1.name")+row_q2.getString("p2.address"));
-                            }
+                            ResultSet resultSet2= session.execute("select pid,name from patient_activity where last_activity ='cardio' and duration>=90 ALLOW FILTERING;");
                             cluster.close();
+                            System.out.println("Results\n");
+                            for (Row row_q2 : resultSet2) {
+                                System.out.println(row_q2.getInt("pid")+"|"+row_q2.getString("name"));
+                            }
+
                             break;
+                        case 3:
 
-
+                            //Connect to the cluster and Keyspace ecommerce
+                            cluster = Cluster.builder().addContactPoint("localhost").build();
+                            session = (Session) cluster.connect("medical_db");
+                            ResultSet resultSet3= session.execute("select pid,name,blood_pressure from patient_vitals where sp02<95 ALLOW FILTERING;");
+                            cluster.close();
+                            System.out.println("Results\n");
+                            for (Row row_q3 : resultSet3) {
+                                System.out.println(row_q3.getInt("pid")+"|"+ row_q3.getString("name")+"|"+ row_q3.getString("blood_pressure"));
+                            }
+                            break;
+                        }
                     }
-                    case 0:
-                        System.out.println("Exiting! GoodBye!");
-                        input=0;
-
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+                    Thread.sleep(5000);
+                    break;
+                case 0:
+                    System.out.println("Exiting! GoodBye!");
+                    input=0;
             }
 
         }
