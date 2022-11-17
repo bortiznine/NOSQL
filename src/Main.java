@@ -165,6 +165,41 @@ public class Main {
                     }
                     break;
                 case 2:
+                    System.out.println("Please Select a Query to run to find data:\n\n");
+                    System.out.println("Find all patients by name with heart rates higher than 90 BPM(1) \n");
+                    System.out.println("Find all patients by Patient ID, name, and address that did cardio last activity(2) \n");
+
+                    Scanner caseTwo_sc1 = new Scanner(System.in);
+                    Integer input2 = caseTwo_sc1.nextInt();
+                    System.out.println("User input: " + input2);
+                    switch (input2){
+                        case 1:
+
+                            Cluster cluster;
+                            Session session;
+                            //Connect to the cluster and Keyspace ecommerce
+                            cluster = Cluster.builder().addContactPoint("localhost").build();
+                            session = (Session) cluster.connect("medical_db");
+                            ResultSet resultSet= session.execute("select name from patient_vitals where heartrate>=90 ALLOW FILTERING;");
+                            for (Row row_q1 : resultSet) {
+                            System.out.println(row_q1.getString("name"));
+                            cluster.close();
+                            }
+                        break;
+                        case 2:
+
+                            //Connect to the cluster and Keyspace ecommerce
+                            cluster = Cluster.builder().addContactPoint("localhost").build();
+                            session = (Session) cluster.connect("medical_db");
+                            ResultSet resultSet2= session.execute("select p1.pid,p1.name,p2.address from patient_activity AS p1, patient_personal_info AS p2 where p1.name=p2.name AND p1.last_activity='cardio' ALLOW FILTERING;");
+                            for (Row row_q2 : resultSet2) {
+                                System.out.println(row_q2.getInt("p1.pid")+row_q2.getString("p1.name")+row_q2.getString("p2.address"));
+                            }
+                            cluster.close();
+                            break;
+
+
+                    }
                     case 0:
                         System.out.println("Exiting! GoodBye!");
                         input=0;
