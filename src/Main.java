@@ -167,7 +167,7 @@ public class Main {
                 case 2:
                     System.out.println("Please Select a Query to run to find data:\n\n");
                     System.out.println("Find all patients by name with heart rates higher than 90 BPM(1) \n");
-                    System.out.println("Find all patients by Patient ID, name, and address that did cardio last activity(2) \n");
+                    System.out.println("Find all patients by Patient ID and name that did cardio last activity(2) \n");
 
                     Scanner caseTwo_sc1 = new Scanner(System.in);
                     Integer input2 = caseTwo_sc1.nextInt();
@@ -191,7 +191,7 @@ public class Main {
                             //Connect to the cluster and Keyspace ecommerce
                             cluster = Cluster.builder().addContactPoint("localhost").build();
                             session = (Session) cluster.connect("medical_db");
-                            ResultSet resultSet2= session.execute("select p1.pid,p1.name,p2.address from patient_activity AS p1, patient_personal_info AS p2 where p1.name=p2.name AND p1.last_activity='cardio' ALLOW FILTERING;");
+                            ResultSet resultSet2= session.execute("select pid,name from patient_activity where last_activity='cardio' ALLOW FILTERING;");
                             for (Row row_q2 : resultSet2) {
                                 System.out.println(row_q2.getInt("p1.pid")+row_q2.getString("p1.name")+row_q2.getString("p2.address"));
                             }
