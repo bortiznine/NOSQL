@@ -170,8 +170,10 @@ public class Main {
                     System.out.println("Find all patients by name with heart rates higher than 90 BPM (1) \n");
                     System.out.println("Find all patients by Patient ID and name that did cardio last activity and duration was 90+ minutes (2) \n");
                     System.out.println("Find the pid,name,blood_pressure of all patients by name that have SP02 lower than 95% (3) \n");
+                    System.out.println("Find the date patients were added and Insurance Company of patients with the name 'Victor James' (4) \n");
 
-                    Scanner caseTwo_sc1 = new Scanner(System.in);
+
+                        Scanner caseTwo_sc1 = new Scanner(System.in);
                     Integer input2 = caseTwo_sc1.nextInt();
                     System.out.println("User input: " + input2);
                     switch (input2){
@@ -213,6 +215,18 @@ public class Main {
                             System.out.println("Results\n");
                             for (Row row_q3 : resultSet3) {
                                 System.out.println(row_q3.getInt("pid")+"|"+ row_q3.getString("name")+"|"+ row_q3.getString("blood_pressure"));
+                            }
+                            break;
+                        case 4:
+
+                            //Connect to the cluster and Keyspace ecommerce
+                            cluster = Cluster.builder().addContactPoint("localhost").build();
+                            session = (Session) cluster.connect("medical_db");
+                            ResultSet resultSet4= session.execute("select date_created,insurance from patient_personal_info where name='Victor James'  ALLOW FILTERING;");
+                            cluster.close();
+                            System.out.println("Results\n");
+                            for (Row row_q4 : resultSet4) {
+                                System.out.println(row_q4.getString("date_created")+"|"+ row_q4.getString("insurance"));
                             }
                             break;
                         }
