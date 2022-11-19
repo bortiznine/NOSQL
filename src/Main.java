@@ -143,6 +143,7 @@ public class Main {
                         PreparedStatement result_vitals2 = session.prepare("select * from patient_vitals where name=? ALLOW FILTERING;");
                         BoundStatement boundStatement_vitals2 = new BoundStatement(result_vitals2);
                         ResultSet resultset_vitals2 = session.execute(boundStatement_vitals2.bind(name));
+                        cluster.close();
                         for (Row row_vitals : resultset_vitals2) {
 
                             blood_pressure = row_vitals.getString("blood_pressure");
@@ -159,10 +160,11 @@ public class Main {
 
                         }
 
-                        cluster.close();
+
                     } catch (Exception e) {
-                        System.out.println(e);
+                        System.out.println(e.getMessage());
                     }
+                    Thread.sleep(5000);
                     break;
                 case 2:
                     try{
@@ -171,6 +173,8 @@ public class Main {
                     System.out.println("Find all patients by Patient ID and name that did cardio last activity and duration was 90+ minutes (2) \n");
                     System.out.println("Find the pid,name,blood_pressure of all patients by name that have SP02 lower than 95% (3) \n");
                     System.out.println("Find the date patients were added and Insurance Company of patients with the name 'Victor James' (4) \n");
+                    System.out.println("Return to Main Menu (0) \n");
+
 
 
                         Scanner caseTwo_sc1 = new Scanner(System.in);
@@ -229,10 +233,41 @@ public class Main {
                                 System.out.println(row_q4.getString("date_created")+"|"+ row_q4.getString("insurance"));
                             }
                             break;
+                        case 0:
+                            System.out.println("Returning to Main Menu!");
                         }
                     }
                     catch (Exception e){
-                        System.out.println(e);
+                        System.out.println(e.getMessage());
+                    }
+                    Thread.sleep(5000);
+                    break;
+                case 3:
+                    try{
+                        System.out.println("Update a Patients Records!\n\n");
+                        System.out.println("Which Table would you like to update records: \n");
+                        System.out.println("Patient's Info (1): \n");
+                        System.out.println("Patient's Vitals (2):\n");
+                        System.out.println("Patient's Physical activity(3) \n");
+                        System.out.println("Return to Main Menu (0) \n");
+                        Scanner caseThree_sc1 = new Scanner(System.in);
+                        Integer input3 = caseThree_sc1.nextInt();
+                        System.out.println("User input: " + input3);
+                        switch (input3){
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break;
+                            case 0:
+                                System.out.println("Returning to Main Menu!");
+                        }
+
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println(e.getMessage());
                     }
                     Thread.sleep(5000);
                     break;
