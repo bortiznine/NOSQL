@@ -1,5 +1,6 @@
 
 import com.datastax.driver.core.*;
+import jnr.ffi.annotations.In;
 import org.apache.cassandra.serializers.TimestampSerializer;
 
 import java.util.Scanner;
@@ -255,8 +256,146 @@ public class Main {
                         System.out.println("User input: " + input3);
                         switch (input3){
                             case 1:
+                                System.out.println("What is the name/patient ID created of the Patient that needs updating: \n");
+                                System.out.println("Name:");
+                                Scanner caseThree_sc2 = new Scanner(System.in);
+                                String findName = caseThree_sc2.nextLine();
+                                System.out.println("Patient ID:");
+                                Scanner caseThree_sc3 = new Scanner(System.in);
+                                Integer findID = caseThree_sc3.nextInt();
+
+                                Cluster cluster;
+                                Session session;
+                                cluster = Cluster.builder().addContactPoint("localhost").build();
+                                session = (Session) cluster.connect("medical_db");
+                                PreparedStatement result_nameFind = session.prepare("select pid from patient_personal_info where name=? and pid=? ALLOW FILTERING;");
+                                BoundStatement boundStatement_name= new BoundStatement(result_nameFind);
+                                ResultSet resultset_namefind = session.execute(boundStatement_name.bind(findName,findID));
+                                cluster.close();
+                                Thread.sleep(1000);
+                                System.out.println("Data found for Patient!");
+                                Thread.sleep(2000);
+                                if(resultset_namefind !=null)
+                                {
+                                    System.out.println("Let's Update the record: \n");
+                                    System.out.println("Which record are we updating? \n");
+                                    System.out.println("Address (1) \n");
+                                    System.out.println("Insurance (2) \n");
+                                    System.out.println("Cancel (0) \n");
+                                    Scanner caseThree_sc4 = new Scanner(System.in);
+                                    Integer input4 = caseThree_sc4.nextInt();
+                                    if(input4 == 1){
+                                        System.out.println("Please enter address:");
+                                        Scanner sc3 = new Scanner(System.in);
+                                        String addressUpdate = sc3.nextLine();
+                                        System.out.println("User input: " + addressUpdate);
+                                        cluster = Cluster.builder().addContactPoint("localhost").build();
+                                        session = (Session) cluster.connect("medical_db");
+                                        PreparedStatement result_update_info = session.prepare("update patient_personal_info set address=? where pid=?;");
+                                        BoundStatement boundStatement_updateAddress= new BoundStatement(result_update_info);
+                                        ResultSet resultset_addressUpdate = session.execute(boundStatement_updateAddress.bind(addressUpdate,findID));
+                                        cluster.close();
+                                        System.out.println("Update for Address Complete!");
+                                    }
+                                    else if(input4==2){
+                                        System.out.println("Please enter insurance company:");
+                                        Scanner sc4 = new Scanner(System.in);
+                                        String insuranceUpdate = sc4.nextLine();
+                                        System.out.println("User input: " + insuranceUpdate);
+                                        cluster = Cluster.builder().addContactPoint("localhost").build();
+                                        session = (Session) cluster.connect("medical_db");
+                                        PreparedStatement result_update_info = session.prepare("update patient_personal_info set insurance=? where pid=?;");
+                                        BoundStatement boundStatement_updateAddress= new BoundStatement(result_update_info);
+                                        ResultSet resultset_addressUpdate = session.execute(boundStatement_updateAddress.bind(insuranceUpdate,findID));
+                                        cluster.close();
+                                        System.out.println("Update for Insurance Complete!");
+                                    }
+                                    else{
+                                        System.out.println("Canceling Update!");
+                                    }
+
+
+                                }
+                                else{
+                                    System.out.println("Looks like this patient does not exist. please refer to the Main Menu to add new patient!\n");
+                                }
+
                                 break;
                             case 2:
+                                System.out.println("What is the name/patient ID created of the Patient that needs updating: \n");
+                                System.out.println("Name:");
+                                Scanner caseThree_sc4 = new Scanner(System.in);
+                                String findName2 = caseThree_sc4.nextLine();
+                                System.out.println("Patient ID:");
+                                Scanner caseThree_sc5 = new Scanner(System.in);
+                                Integer findID2 = caseThree_sc5.nextInt();
+                                cluster = Cluster.builder().addContactPoint("localhost").build();
+                                session = (Session) cluster.connect("medical_db");
+                                PreparedStatement result_nameFind2 = session.prepare("select pid from patient_vitals where name=? and pid=? ALLOW FILTERING;");
+                                BoundStatement boundStatement_name2= new BoundStatement(result_nameFind2);
+                                ResultSet resultset_namefind2 = session.execute(boundStatement_name2.bind(findName2,findID2));
+                                cluster.close();
+                                Thread.sleep(1000);
+                                System.out.println("Data found for Patient!");
+                                Thread.sleep(2000);
+                                if(resultset_namefind2 !=null)
+                                {
+                                    System.out.println("Let's Update the record: \n");
+                                    System.out.println("Which record are we updating? \n");
+                                    System.out.println("Blood Pressure (1) \n");
+                                    System.out.println("Heart Rate (2) \n");
+                                    System.out.println("SP02 (3) \n");
+                                    System.out.println("Cancel (0) \n");
+                                    Scanner caseThree_sc6 = new Scanner(System.in);
+                                    Integer input5 = caseThree_sc6.nextInt();
+                                    if(input5 == 1){
+                                        System.out.println("Please enter blood pressure (SYS/DIAS):");
+                                        Scanner sc4 = new Scanner(System.in);
+                                        String bpUpdate = sc4.nextLine();
+                                        System.out.println("User input: " + bpUpdate);
+                                        cluster = Cluster.builder().addContactPoint("localhost").build();
+                                        session = (Session) cluster.connect("medical_db");
+                                        PreparedStatement result_update_info = session.prepare("update patient_vitals set blood_pressure=? where pid=?;");
+                                        BoundStatement boundStatement_updateBP= new BoundStatement(result_update_info);
+                                        ResultSet resultset_bpUpdate = session.execute(boundStatement_updateBP.bind(bpUpdate,findID2));
+                                        cluster.close();
+                                        System.out.println("Update for Blood Pressure Complete!");
+                                    }
+                                    else if(input5==2){
+                                        System.out.println("Please enter Heart Rate:");
+                                        Scanner sc4 = new Scanner(System.in);
+                                        Integer hrUpdate = sc4.nextInt();
+                                        System.out.println("User input: " + hrUpdate);
+                                        cluster = Cluster.builder().addContactPoint("localhost").build();
+                                        session = (Session) cluster.connect("medical_db");
+                                        PreparedStatement result_update_info = session.prepare("update patient_vitals set heartrate=? where pid=?;");
+                                        BoundStatement boundStatement_hrUpdate= new BoundStatement(result_update_info);
+                                        ResultSet resultset_hrUpdate = session.execute(boundStatement_hrUpdate.bind(hrUpdate,findID2));
+                                        cluster.close();
+                                        System.out.println("Update for Heart Rate Complete!");
+                                    }
+                                    else if(input5==3){
+                                        System.out.println("Please enter SP02:");
+                                        Scanner sc4 = new Scanner(System.in);
+                                        Integer spUpdate = sc4.nextInt();
+                                        System.out.println("User input: " + spUpdate);
+                                        cluster = Cluster.builder().addContactPoint("localhost").build();
+                                        session = (Session) cluster.connect("medical_db");
+                                        PreparedStatement result_update_info = session.prepare("update patient_vitals set sp02=? where pid=?;");
+                                        BoundStatement boundStatement_spUpdate= new BoundStatement(result_update_info);
+                                        ResultSet resultset_spUpdate = session.execute(boundStatement_spUpdate.bind(spUpdate,findID2));
+                                        cluster.close();
+                                        System.out.println("Update for SP02 Complete!");
+                                    }
+                                    else{
+                                        System.out.println("Canceling Update!");
+                                    }
+
+
+                                }
+                                else{
+                                    System.out.println("Looks like this patient does not exist. please refer to the Main Menu to add new patient!\n");
+                                }
                                 break;
                             case 3:
                                 break;
