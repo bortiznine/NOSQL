@@ -174,6 +174,9 @@ public class Main {
                         System.out.println("Find all patients by Patient ID and name that did cardio last activity and duration was 90+ minutes (2) \n");
                         System.out.println("Find the pid,name,blood_pressure of all patients by name that have SP02 lower than 95% (3) \n");
                         System.out.println("Find the date patients were added and Insurance Company of patients with the name 'Victor James' (4) \n");
+                        System.out.println("See all patient personal information (5) \n");
+                        System.out.println("See all patient activities (6) \n");
+                        System.out.println("See all patient vitals (7) \n");
                         System.out.println("Return to Main Menu (0) \n");
 
 
@@ -231,6 +234,83 @@ public class Main {
                                 System.out.println("Results\n");
                                 for (Row row_q4 : resultSet4) {
                                     System.out.println(row_q4.getString("date_created") + "|" + row_q4.getString("insurance"));
+                                }
+                                break;
+
+                            case 5:
+
+                                //Connect to the cluster and Keyspace ecommerce
+                                cluster = Cluster.builder().addContactPoint("localhost").build();
+                                session = (Session) cluster.connect("medical_db");
+                                ResultSet resultSet5 = session.execute("select * from patient_personal_info ALLOW FILTERING;");
+                                cluster.close();
+                                System.out.println("Results\n");
+                                for (Row row5 : resultSet5) {
+                                   int pid = row5.getInt("pid");
+                                   String address = row5.getString("address");
+                                  String  insurance = row5.getString("insurance");
+                                    String name = row5.getString("name");
+                                    String date_created= row5.getString("date_created");
+
+
+                                    System.out.println("Patient ID: " + pid);
+                                    System.out.println("Name: " + name);
+                                    System.out.println("Address: " + address);
+                                    System.out.println("Insurance: " + insurance);
+                                    System.out.println("Dated Created: " + date_created+"\n");
+                                }
+                                break;
+
+                            case 6:
+
+                                //Connect to the cluster and Keyspace ecommerce
+                                cluster = Cluster.builder().addContactPoint("localhost").build();
+                                session = (Session) cluster.connect("medical_db");
+                                ResultSet resultSet6 = session.execute("select * from patient_activity ALLOW FILTERING;");
+                                cluster.close();
+                                System.out.println("Results\n");
+                                for (Row row6 : resultSet6) {
+                                    int pid = row6.getInt("pid");
+                                    double activity_duration = row6.getDouble("duration");
+                                   String activity = row6.getString("last_activity");
+                                    String name = row6.getString("name");
+                                    String date_created= row6.getString("time");
+
+
+                                    System.out.println("Duration: " + activity_duration);
+                                    System.out.println("Last Activity: " + activity);
+                                    System.out.println("Time Stamp: " + date_created);
+                                    System.out.println("Patient ID: " + pid);
+                                    System.out.println("Name: " + name+ "\n");
+
+
+                                }
+                                break;
+
+                            case 7:
+
+                                //Connect to the cluster and Keyspace ecommerce
+                                cluster = Cluster.builder().addContactPoint("localhost").build();
+                                session = (Session) cluster.connect("medical_db");
+                                ResultSet resultSet7 = session.execute("select * from patient_vitals ALLOW FILTERING;");
+                                cluster.close();
+                                System.out.println("Results\n");
+                                for (Row row7 : resultSet7) {
+
+                                    String blood_pressure = row7.getString("blood_pressure");
+                                   int heart_rate = row7.getInt("heartrate");
+                                   String name = row7.getString("name");
+                                    int sp02 = row7.getInt("sp02");
+                                    int pid = row7.getInt("pid");
+
+
+                                    System.out.println("Patient ID: " + pid);
+                                    System.out.println("Name: " + name);
+                                    System.out.println("Blood Pressure: " + blood_pressure);
+                                    System.out.println("Heart Rate: " + heart_rate);
+                                    System.out.println("Oxygen Levels: " + sp02+ "\n");
+
+
                                 }
                                 break;
                             case 0:
